@@ -1,1 +1,17 @@
 name: manual deploy
+run-name: Deploy to ${{ inputs.service }} by @${{ github.actor }}
+on:
+  workflow_dispatch:
+    inputs:
+      service:
+        description: 'service name'
+        required: true
+        default: 'harrods'
+        type: choice
+        options:
+          - harrods
+          - stat
+jobs:
+  first_job:
+    name: first job
+    runs-on: ubuntu-latest
