@@ -1,5 +1,5 @@
 name: manual deploy
-run-name: Deploy to ${{ inputs.service }} by @${{ github.actor }}
+#run-name: Deploy to ${{ inputs.service }} by @${{ github.actor }}
 on:
   workflow_dispatch:
     inputs:
@@ -16,10 +16,10 @@ jobs:
     name: first job
     runs-on: ubuntu-22.04
     steps:
-      - run: echo 'first job'
+      - run: echo '${{ inputs.service }}'
   second_job:
     name: second job
     runs-on: ubuntu-22.04
-    needs: [ first_job ]
+    needs: [ first_job ] # first_job을 실행하고 second_job을 실행하도록 한다
     steps:
       - run: echo 'second job'
