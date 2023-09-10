@@ -1,5 +1,5 @@
-#name: manual deploy
-#run-name: Deploy to ${{ inputs.service }} by @${{ github.actor }}
+name: manual deploy
+run-name: Deploy to ${{ inputs.service }} branch on ${{ github.ref_name }} by @${{ github.actor }}
 on:
   workflow_dispatch:
     inputs:
