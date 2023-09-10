@@ -1,4 +1,4 @@
-name: manual deploy
+#name: manual deploy
 #run-name: Deploy to ${{ inputs.service }} by @${{ github.actor }}
 on:
   workflow_dispatch:
