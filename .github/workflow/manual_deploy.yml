@@ -11,3 +11,7 @@ on:
         options:
           - harrods
           - stat
+jobs:
+  first_job:
+    name: first job
+    runs-on: ubuntu-latest
