@@ -22,11 +22,10 @@ jobs:
       - id: set_env
         name: Set Env Variables
         run: |
-          echo $GITHUB_ENV
           echo "ecr_repo=${{ inputs.env }}_${{ inputs.service }}_ECR_REPO" >> $GITHUB_ENV
           echo "project=${{ inputs.env }}_${{ inputs.service }}_PROJECT" >> $GITHUB_ENV
           echo "dockerfile=${{ inputs.env }}_${{ inputs.service }}_DOCKERFILE" >> $GITHUB_ENV
-          echo $GITHUB_ENV
+          echo "${{ env.ecr_repo }}, ${{ env.project }}, ${{ env.dockerfile }}"
 
   build:
     name: second job
