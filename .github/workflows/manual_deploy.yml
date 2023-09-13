@@ -12,14 +12,25 @@ on:
           - harrods
           - stat
 jobs:
-  first_job:
-    name: first job
+  setup_environment:
+    name: setup environment
     runs-on: ubuntu-22.04
     steps:
-      - run: echo '${{ inputs.service }}'
-  second_job:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - id: set_env
+        name: Set Env Variables
+        run: |
+          echo "$GITHUB_ENV"
+          echo "ecr_repo=\$${{ inputs.env }}_${{ inputs.service }}_ECR_REPO" >> $GITHUB_ENV
+          echo "project=\$${{ inputs.env }}_${{ inputs.service }}_PROJECT" >> $GITHUB_ENV
+          echo "dockerfile=\$${{ inputs.env }}_${{ inputs.service }}_DOCKERFILE" >> $GITHUB_ENV
+          echo "$GITHUB_ENV"
+
+  build:
     name: second job
     runs-on: ubuntu-22.04
-    needs: [ first_job ] # first_job을 실행하고 second_job을 실행하도록 한다
+    needs: [ setup_environment ] # first_job을 실행하고 second_job을 실행하도록 한다
     steps:
       - run: echo 'second job'
