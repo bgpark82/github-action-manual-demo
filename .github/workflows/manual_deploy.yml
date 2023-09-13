@@ -11,21 +11,31 @@ on:
         options:
           - harrods
           - stat
+env:
+  AWS_REGION: ap-northeast-2
+  S3_DEPLOY_LOCATION: s3://musinsa-server-build/dataplatform/
+
 jobs:
   setup_environment:
     name: setup environment
     runs-on: ubuntu-22.04
+    outputs:
+      service_name: ${{ steps.vars.outputs.service_name }}
+      service_tar: ${{ step.vars.outputs.service_tar }}
+      profile: ${{ step.vars.outputs.profile }}
+      deploy_location: ${{ step.vars.outputs.profile }}
+
     steps:
       - name: Checkout
         uses: actions/checkout@v3
 
-      - id: set_env
-        name: Set Env Variables
+      - id: vars
+        name: Ser variables
         run: |
-          echo "ecr_repo=${{ inputs.env }}_${{ inputs.service }}_ECR_REPO" >> $GITHUB_ENV
-          echo "project=${{ inputs.env }}_${{ inputs.service }}_PROJECT" >> $GITHUB_ENV
-          echo "dockerfile=${{ inputs.env }}_${{ inputs.service }}_DOCKERFILE" >> $GITHUB_ENV
-          echo "${{ env.ecr_repo }}, ${{ env.project }}, ${{ env.dockerfile }}"
+          echo service_name=${{ inputs.service }} >> $GITHUB_ENV
+          echo profile=${{ inputs.env }} >> $GITHUB_ENV
+          echo service_tar=${{ env.service_name }}.tar  >> $GITHUB_ENV
+          echo deploy_location=${{ env.S3_DEPLOY_LOCATION }}/${{env.service_name}}/${{env.profile}}/${{service_tar}}  >> $GITHUB_ENV
 
   build:
     name: second job
