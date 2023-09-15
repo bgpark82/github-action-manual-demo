@@ -11,15 +11,6 @@ on:
         options:
           - harrods
           - stat
-      env:
-        description: '배포할 환경을 선택해주세요'
-        required: true
-        default: 'dev'
-        type: choice
-        options:
-          - dev
-          - alpha
-          - prod
 
 # 모든 변수 선언
 env:
@@ -41,27 +32,34 @@ jobs:
         uses: actions/checkout@v3
 
       - id: vars
-        name: Set input variables
+        name: Set variables
         run: |
           service="${{ inputs.service }}"
-          profile="${{ inputs.env }}"
+          profile="${{ github.ref_name }}"
           build_file="${service}.tar"
           
           echo "service=$service" >> $GITHUB_ENV
           echo "profile=$profile" >> $GITHUB_ENV
-          echo "build_file=${build_file}.jar"  >> $GITHUB_ENV
+          echo "build_file=${build_file}"  >> $GITHUB_ENV
           echo "build_file_path=${{ env.S3_DEPLOY_BASE_PATH }}/$service/$profile/$build_file"  >> $GITHUB_ENV
 
-      - name: Set env variables
-        run: | 
+      - name: Check variables
+        run: |
+          echo "check if service module exist"
           
+          if [ -d "${{ env.service }}" ]; then
+            echo "Service ${{ env.service }} exist"
+          else
+            echo "Unsupported service: ${{ env.service }}"
+            exit 1
+          fi
 
       - name: Print variables
         run: |
-          echo service=${{ env.service }}
-          echo profile=${{ env.profile }}
-          echo build_file=${{ env.build_file }} 
-          echo build_file_path=${{ env.build_file_path }} 
+          echo service: ${{ env.service }}
+          echo profile: ${{ env.profile }}
+          echo build_file: ${{ env.build_file }} 
+          echo build_file_path: ${{ env.build_file_path }} 
 
   build:
     name: build service
@@ -97,7 +95,7 @@ jobs:
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: ap-northeast-2
+          aws-region: ${{ env.AWS_REGION }}
 
       - name: Upload to S3
         run: aws s3 cp --region ${{ env.AWS_REGION }} ${{ env.build_file }} ${{ env.build_file_path }}
