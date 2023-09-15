@@ -11,6 +11,15 @@ on:
         options:
           - harrods
           - stat
+      env:
+        description: '배포할 환경을 선택해주세요'
+        required: true
+        default: 'dev'
+        type: choice
+        options:
+          - dev
+          - alpha
+          - prod
 env:
   AWS_REGION: ap-northeast-2
   S3_DEPLOY_LOCATION: s3://musinsa-server-build/dataplatform/
