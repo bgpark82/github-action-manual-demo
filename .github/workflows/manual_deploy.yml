@@ -21,9 +21,9 @@ jobs:
     runs-on: ubuntu-22.04
     outputs:
       service_name: ${{ steps.vars.outputs.service_name }}
-      service_tar: ${{ step.vars.outputs.service_tar }}
-      profile: ${{ step.vars.outputs.profile }}
-      deploy_location: ${{ step.vars.outputs.profile }}
+      service_tar: ${{ steps.vars.outputs.service_tar }}
+      profile: ${{ steps.vars.outputs.profile }}
+      deploy_location: ${{ steps.vars.outputs.profile }}
 
     steps:
       - name: Checkout
