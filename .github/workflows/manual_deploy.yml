@@ -32,10 +32,10 @@ jobs:
       - id: vars
         name: Set variables
         run: |
-          echo service_name=${{ inputs.service }} >> $GITHUB_ENV
-          echo profile=${{ inputs.env }} >> $GITHUB_ENV
-          echo service_tar=${{ env.service_name }}.tar  >> $GITHUB_ENV
-          echo deploy_location=${{ env.S3_DEPLOY_LOCATION }}/${{ env.service_name }}/${{ env.profile }}/${{ env.service_tar }}  >> $GITHUB_ENV
+          echo "profile=${{ inputs.env }}" >> $GITHUB_ENV
+          echo "service_name=${{ inputs.service }}" >> $GITHUB_ENV
+          echo "service_tar=${{ env.service_name }}.tar"  >> $GITHUB_ENV
+          echo "deploy_location=${{ env.S3_DEPLOY_LOCATION }}/${{ env.service_name }}/${{ env.profile }}/${{ env.service_tar }}"  >> $GITHUB_ENV
 
       - name: Display environment variables
         run: |
