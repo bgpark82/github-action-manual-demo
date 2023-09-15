@@ -45,7 +45,7 @@ jobs:
         run: |
           echo "service=${{ inputs.service }}" >> $GITHUB_ENV
           echo "profile=${{ inputs.env }}" >> $GITHUB_ENV
-          echo "build_file=${{ env.service }}.tar"  >> $GITHUB_ENV
+          echo "build_file=${{ inputs.service }}.tar"  >> $GITHUB_ENV
 
       - id: env_vars
         name: Set env variables
