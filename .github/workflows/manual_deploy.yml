@@ -53,7 +53,7 @@ jobs:
         name: Set env variables
         run: | 
           echo "build_file_path=${{ env.S3_DEPLOY_BASE_PATH }}/${{ env.service }}/${{ env.profile }}/${{ env.build_file }}"  >> $GITHUB_ENV
-          if [ -d "${{ env.service }} ]; then
+          if [ -d "${{ env.service }}" ]; then
             echo "service exist"
           else
             echo "Unsupported Service: ${{ env.service }}"
