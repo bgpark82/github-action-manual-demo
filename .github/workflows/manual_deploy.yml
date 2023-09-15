@@ -20,6 +20,8 @@ on:
           - dev
           - alpha
           - prod
+
+# 모든 변수 선언
 env:
   AWS_REGION: ap-northeast-2
   S3_DEPLOY_LOCATION: s3://musinsa-server-build/dataplatform/
@@ -29,33 +31,36 @@ jobs:
     name: setup environment
     runs-on: ubuntu-22.04
     outputs:
-      service_name: ${{ steps.vars.outputs.service_name }}
+      service: ${{ steps.vars.outputs.service }}
       profile: ${{ steps.vars.outputs.profile }}
-      service_tar: ${{ steps.vars.outputs.service_tar }}
-      deploy_location: ${{ steps.vars.outputs.profile }}
+      build_file: ${{ steps.vars.outputs.build_file }}
+      build_file_path: ${{ steps.vars.outputs.build_file_path }}
 
     steps:
       - name: Checkout
         uses: actions/checkout@v3
 
       - id: vars
-        name: Set variables
+        name: Set input variables
         run: |
+          echo "service=${{ inputs.service }}" >> $GITHUB_ENV
           echo "profile=${{ inputs.env }}" >> $GITHUB_ENV
-          echo "service_name=${{ inputs.service }}" >> $GITHUB_ENV
-          
-      - name: Set env variables
-        run: |
-          echo "service_tar=${{ env.service_name }}.tar"  >> $GITHUB_ENV
-          echo "deploy_location=${{ env.S3_DEPLOY_LOCATION }}/${{ env.service_name }}/${{ env.profile }}/${{ env.service_tar }}"  >> $GITHUB_ENV
 
-      - name: Display environment variables
+      - name: Set environment variables
         run: |
-          
-          echo service_name=${{ env.service_name }}
+          echo "build_file=${{ env.service_name }}.tar"  >> $GITHUB_ENV
+          echo "build_file_path=${{ env.S3_DEPLOY_LOCATION }}/${{ env.service_name }}/${{ env.profile }}/${{ env.build_file }}"  >> $GITHUB_ENV
+
+      - name: Print variables
+        run: |
+          echo service=${{ env.service }}
           echo profile=${{ env.profile }}
-          echo service_tar=${{ env.service_tar }} 
-          echo deploy_location=${{ env.deploy_location }} 
+          echo build_file=${{ env.build_file }} 
+          echo build_file_path=${{ env.build_file_path }} 
+          echo service=${{ steps.vars.output.service }}
+          echo profile=${{ steps.vars.output.profile }}
+          echo build_file=${{ steps.vars.output.build_file }} 
+          echo build_file_path=${{ steps.vars.output.build_file_path }} 
 
   build:
     name: second job
