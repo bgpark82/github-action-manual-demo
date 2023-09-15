@@ -45,11 +45,8 @@ jobs:
         run: |
           echo "service=${{ inputs.service }}" >> $GITHUB_ENV
           echo "profile=${{ inputs.env }}" >> $GITHUB_ENV
-
-      - name: Set environment variables
-        run: |
-          echo "build_file=${{ env.service_name }}.tar"  >> $GITHUB_ENV
-          echo "build_file_path=${{ env.S3_DEPLOY_LOCATION }}/${{ env.service_name }}/${{ env.profile }}/${{ env.build_file }}"  >> $GITHUB_ENV
+          echo "build_file=${{ steps.vars.outputs.service_name }}.tar"  >> $GITHUB_ENV
+          echo "build_file_path=${{ env.S3_DEPLOY_LOCATION }}/${{ env.service }}/${{ env.profile }}/${{ steps.vars.outputs.build_file }}"  >> $GITHUB_ENV
 
       - name: Print variables
         run: |
