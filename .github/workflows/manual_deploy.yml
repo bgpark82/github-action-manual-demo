@@ -57,10 +57,10 @@ jobs:
           echo profile=${{ env.profile }}
           echo build_file=${{ env.build_file }} 
           echo build_file_path=${{ env.build_file_path }} 
-          echo service=${{ steps.vars.output.service }}
-          echo profile=${{ steps.vars.output.profile }}
-          echo build_file=${{ steps.vars.output.build_file }} 
-          echo build_file_path=${{ steps.vars.output.build_file_path }} 
+          echo service=${{ steps.vars.outputs.service }}
+          echo profile=${{ steps.vars.outputs.profile }}
+          echo build_file=${{ steps.vars.outputs.build_file }} 
+          echo build_file_path=${{ steps.vars.outputs.build_file_path }} 
 
   build:
     name: second job
