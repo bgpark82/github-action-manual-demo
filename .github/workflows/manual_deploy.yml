@@ -43,23 +43,18 @@ jobs:
       - id: vars
         name: Set input variables
         run: |
-          echo "service=${{ inputs.service }}" >> $GITHUB_ENV
-          echo "profile=${{ inputs.env }}" >> $GITHUB_ENV
-          echo "build_file=${{ inputs.service }}.tar"  >> $GITHUB_ENV
+          service=${{ inputs.service }}
+          profile=${{ inputs.env }}
+          build_file=${ service }.tar
           
-           
+          echo "service=$service" >> $GITHUB_ENV
+          echo "profile=$profile" >> $GITHUB_ENV
+          echo "build_file=${build_file}.jar"  >> $GITHUB_ENV
+          echo "build_file_path=${{ env.S3_DEPLOY_BASE_PATH }}/$service/$profile/$build_file"  >> $GITHUB_ENV
 
-      - id: env_vars
-        name: Set env variables
+      - name: Set env variables
         run: | 
-          echo "build_file_path=${{ env.S3_DEPLOY_BASE_PATH }}/${{ env.service }}/${{ env.profile }}/${{ env.build_file }}"  >> $GITHUB_ENV
           
-          if [ -d "${{ env.service }}" ]; then
-            echo "service exist"
-          else
-            echo "Unsupported Service: ${{ env.service }}"
-            exit 1
-          fi
 
       - name: Print variables
         run: |
@@ -110,7 +105,7 @@ jobs:
   post:
     name: do post action
     runs-on: ubuntu-22.04
-    needs: [deploy]
+    needs: [ deploy ]
     steps:
       - name: Send result to Slack
         uses: 8398a7/action-slack@v3
