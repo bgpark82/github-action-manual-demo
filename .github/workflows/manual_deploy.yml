@@ -46,6 +46,7 @@ jobs:
           echo "build_file_path_s3=${{ env.S3_DEPLOY_BASE_PATH }}/$service/$profile/$build_file"  >> $GITHUB_ENV
 
       - name: Print variables
+        id: env_vars
         run: |
           echo service: ${{ env.service }}
           echo profile: ${{ env.profile }}
@@ -142,14 +143,14 @@ jobs:
                   "type": "section",
                   "text": {
                     "type": "mrkdwn",
-                    "text": "GitHub Action build result: ${{ job.status }}\n${{ github.event.pull_request.html_url || github.event.head_commit.url }}"
+                    "text": "✅ ${{ env.SERVICE }}를 배포하였습니다
                   }
                 },
                 {
                     "type": "section",
                     "text": {
                         "type": "mrkdwn",
-                        "text": "Service: ${{ env.service }}\nBranch: ${{ github.ref_name }}"
+                        "text": "Service: ${{ env.SERVICE }}\nBranch: ${{ github.PROFILE }}\nS3 Path: ${{ env.S3_PATH }}"
                     }
                   }
               ]
@@ -157,4 +158,6 @@ jobs:
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
           SLACK_WEBHOOK_TYPE: INCOMING_WEBHOOK
-          SERVICE: ${{ env.service }}
+          SERVICE: ${{ needs.setup_environment.outputs.service }}
+          PROFILE: ${{ needs.setup_environment.outputs.profile }}
+          S3_PATH: ${{ needs.setup_environment.outputs.build_file_path_s3 }}
