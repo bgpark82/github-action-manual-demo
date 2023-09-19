@@ -11,6 +11,14 @@ on:
         options:
           - harrods
           - stat
+    deploy_flag:
+      description: '배포 여부를 선택해주세요'
+      required: true
+      default: 'true'
+      type: choice
+      options:
+        - 'true'
+        - 'false'
 
 # 모든 변수 선언
 env:
