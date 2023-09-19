@@ -149,10 +149,23 @@ jobs:
                     "type": "mrkdwn",
                     "text": "✅ ${{ env.service }} 빌드 파일이 S3로 전송되었습니다"
                   }
-                }
+                },
                 
+              ],
+              "attachments": [
+                {
+                  "blocks": 
+                    [
+                      {
+                          "type": "section",
+                          "text": {
+                            "type": "mrkdwn",
+                            "text": "*Alternative hotel options*"
+                          }
+                      }
+                    ]
+                }
               ]
-              
             }
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
