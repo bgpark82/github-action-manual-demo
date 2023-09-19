@@ -25,7 +25,8 @@ jobs:
       service: ${{ steps.vars.outputs.service }}
       profile: ${{ steps.vars.outputs.profile }}
       build_file: ${{ steps.vars.outputs.build_file }}
-      build_file_path: ${{ steps.vars.outputs.build_file_path }}
+      build_file_path_s3: ${{ steps.vars.outputs.build_file_path_s3 }}
+      build_file_path_local: ${{ steps.vars.outputs.build_file_path_local }}
 
     steps:
       - name: Checkout
@@ -40,26 +41,28 @@ jobs:
           
           echo "service=$service" >> $GITHUB_ENV
           echo "profile=$profile" >> $GITHUB_ENV
-          echo "build_file=${build_file}"  >> $GITHUB_ENV
-          echo "build_file_path=${{ env.S3_DEPLOY_BASE_PATH }}/$service/$profile/$build_file"  >> $GITHUB_ENV
+          echo "build_file=$service.tar"  >> $GITHUB_ENV
+          echo "build_file_path_local=$service/build/libs"  >> $GITHUB_ENV
+          echo "build_file_path_s3=${{ env.S3_DEPLOY_BASE_PATH }}/$service/$profile/$build_file"  >> $GITHUB_ENV
+
+      - name: Print variables
+        run: |
+          echo service: ${{ env.service }}
+          echo profile: ${{ env.profile }}
+          echo build_file: ${{ env.build_file }}
+          echo build_file_path_s3: ${{ env.build_file_path_s3 }}
+          echo build_file_path_local: ${{ env.build_file_path_local }}
 
       - name: Check variables
         run: |
           echo "check if service module exist"
-          
+
           if [ -d "${{ env.service }}" ]; then
             echo "Service ${{ env.service }} exist"
           else
             echo "Unsupported service: ${{ env.service }}"
             exit 1
           fi
-
-      - name: Print variables
-        run: |
-          echo service: ${{ env.service }}
-          echo profile: ${{ env.profile }}
-          echo build_file: ${{ env.build_file }} 
-          echo build_file_path: ${{ env.build_file_path }} 
 
   build:
     name: build service
@@ -76,30 +79,40 @@ jobs:
           java-version: 17
           cache: 'gradle'
 
-      - name: Install Kotlin
-        run: sudo snap install --classic kotlin --channel=1.7
+#      - name: Install Kotlin
+#        run: sudo snap install --classic kotlin --channel=1.7
 
-      - name: Build
-        run: ./gradlew :${{ env.service }}:build
-
-  deploy:
-    name: deploy service
-    runs-on: ubuntu-22.04
-    needs: [ build ]
-    steps:
-      - name: Compress tar
-        run: tar -cvf ${{ env.build_file }} -C ./${{ env.service }}/build/libs .
-
-      - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v2
-        with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: ${{ env.AWS_REGION }}
-
-      - name: Upload to S3
-        run: aws s3 cp --region ${{ env.AWS_REGION }} ${{ env.build_file }} ${{ env.build_file_path }}
-
+#      - name: Build
+#        run: ./gradlew :${{ env.service }}:build
+#
+#      - name: Check build file
+#        run: |
+#          echo "Check if build file exist"
+#          if [ -e ${{ env.build_file_path_local }}/${{ env.build_file }} ]; then
+#            echo "${{ env.build_file }} exist"
+#          else
+#            echo "${{ env.build_file }} does not exist"
+#            exit 1
+#          fi
+#
+#  deploy:
+#    name: deploy service
+#    runs-on: ubuntu-22.04
+#    needs: [ build ]
+#    steps:
+#      - name: Compress tar
+#        run: tar -cvf ${{ env.build_file }} -C ./${{ env.build_file_path_local }} .
+#
+#      - name: Configure AWS credentials
+#        uses: aws-actions/configure-aws-credentials@v2
+#        with:
+#          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+#          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+#          aws-region: ${{ env.AWS_REGION }}
+#
+#      - name: Upload to S3
+#        run: aws s3 cp --region ${{ env.AWS_REGION }} ${{ env.build_file }} ${{ env.build_file_path }}
+#
   post:
     name: do post action
     runs-on: ubuntu-22.04
@@ -113,5 +126,5 @@ jobs:
           author_name: ${{ env.service }}_build_bot
           fields: repo,message,commit,author,action,eventName,ref,workflow,job,took
         env:
-          SLACK_WEBHOOK_URL: ${{ secrets.STAT_SLACK_WEBHOOK_URL }}
+          SLACK_WEBHOOK_URL: https://hooks.slack.com/services/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
         if: always()
