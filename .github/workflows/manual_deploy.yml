@@ -149,61 +149,10 @@ jobs:
                     "type": "mrkdwn",
                     "text": "✅ ${{ env.service }} 빌드 파일이 S3로 전송되었습니다"
                   }
-                },
-                {
-                    "type": "section",
-                    "text": {
-                        "type": "mrkdwn",
-                        "text": "> Service: ${{ env.service }}\n > Branch: ${{ env.profile }} \n > S3 Path : ${{ env.build_file_path_s3 }}",
-                        "color": "#5cb589"
-                    }
-                  }
-              ],
-              "attachments": [
-                {
-                  "blocks": [
-                      			{
-                                      "type": "section",
-                                      "text": {
-                                        "type": "mrkdwn",
-                                        "text": "*Alternative hotel options*"
-                                      }
-                                  },
-                                    {
-                                      "type": "section",
-                                      "text": {
-                                        "type": "mrkdwn",
-                                        "text": "<https://example.com|Bates Motel> :star::star:"
-                                      },
-                                      "accessory": {
-                                        "type": "button",
-                                        "text": {
-                                          "type": "plain_text",
-                                          "text": "View",
-                                          "emoji": true
-                                        },
-                                        "value": "view_alternate_1"
-                                      }
-                                    },
-                                    {
-                                      "type": "section",
-                                      "text": {
-                                        "type": "mrkdwn",
-                                        "text": "<https://example.com|The Great Northern Hotel> :star::star::star::star:"
-                                      },
-                                      "accessory": {
-                                        "type": "button",
-                                        "text": {
-                                          "type": "plain_text",
-                                          "text": "View",
-                                          "emoji": true
-                                        },
-                                        "value": "view_alternate_2"
-                                      }
-                                    }
-                  ]
                 }
+                
               ]
+              
             }
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
