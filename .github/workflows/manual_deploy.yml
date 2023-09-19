@@ -154,7 +154,7 @@ jobs:
                     "type": "section",
                     "text": {
                         "type": "mrkdwn",
-                        "text": "> Service: ${{ env.service }}\n > Branch: ${{ env.profile }} \n > S3 Path : ${{ env.build_file_path_s3 }}"
+                        "text": "> Service: ${{ env.service }}\n Branch: ${{ env.profile }} \n S3 Path : ${{ env.build_file_path_s3 }}"
                     }
                   }
               ]
