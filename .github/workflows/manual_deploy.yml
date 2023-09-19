@@ -39,6 +39,12 @@ jobs:
           profile="${{ github.ref_name }}"
           build_file="${service}.tar"
           
+          echo "service=$service" >> $GITHUB_OUTPUT
+          echo "profile=$profile" >> $GITHUB_OUTPUT
+          echo "build_file=$service.tar"  >> $GITHUB_OUTPUT
+          echo "build_file_path_local=$service/build/libs"  >> $GITHUB_OUTPUT
+          echo "build_file_path_s3=${{ env.S3_DEPLOY_BASE_PATH }}/$service/$profile/$build_file"  >> $GITHUB_OUTPUT
+          
           echo "service=$service" >> $GITHUB_ENV
           echo "profile=$profile" >> $GITHUB_ENV
           echo "build_file=$service.tar"  >> $GITHUB_ENV
