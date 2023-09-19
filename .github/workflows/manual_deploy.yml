@@ -126,5 +126,5 @@ jobs:
           author_name: ${{ env.service }}_build_bot
           fields: repo,message,commit,author,action,eventName,ref,workflow,job,took
         env:
-          SLACK_WEBHOOK_URL: https://hooks.slack.com/services/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
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
         if: always()
