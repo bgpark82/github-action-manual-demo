@@ -143,14 +143,14 @@ jobs:
                   "type": "section",
                   "text": {
                     "type": "mrkdwn",
-                    "text": "✅ ${{ env.SERVICE }}를 배포하였습니다"
+                    "text": "✅ ${{ needs.setup_environment.outputs.service }}를 배포하였습니다"
                   }
                 },
                 {
                     "type": "section",
                     "text": {
                         "type": "mrkdwn",
-                        "text": "Service: ${{ env.SERVICE }}\nBranch: ${{ github.PROFILE }}\nS3 Path: ${{ env.S3_PATH }}"
+                        "text": "Service: ${{ env.SERVICE }}\nBranch: ${{ env.PROFILE }}\nS3 Path: ${{ env.S3_PATH }}"
                     }
                   }
               ]
