@@ -117,7 +117,7 @@ jobs:
   post:
     name: do post action
     runs-on: ubuntu-22.04
-    needs: [ build ]
+    needs: [ setup_environment, build ]
     steps:
       - name: Send result to Slack
         uses: 8398a7/action-slack@v3
