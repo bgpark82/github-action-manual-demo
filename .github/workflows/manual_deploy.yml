@@ -121,6 +121,7 @@ jobs:
     env:
       service: ${{ needs.setup_environment.outputs.service }}
       profile: ${{ needs.setup_environment.outputs.profile }}
+      build_file_path_s3: ${{ needs.setup_environment.outputs.build_file_path_s3 }}
     steps:
       - name: Send result to Slack
         uses: 8398a7/action-slack@v3
@@ -128,7 +129,7 @@ jobs:
           status: ${{ job.status }}
           text: ${{ env.service }}_build
           author_name: ${{ env.service }}_build_bot
-          fields: repo,message,commit,author,action,eventName,ref,workflow,job,took
+          fields: repo,message,commit,author,action,eventName,ref,workflow,took
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
         if: always()
@@ -153,7 +154,7 @@ jobs:
                     "type": "section",
                     "text": {
                         "type": "mrkdwn",
-                        "text": "Service: ${{ env.service }}\nBranch: ${{ env.profile }}"
+                        "text": "> Service: ${{ env.service }}\n > Branch: ${{ env.profile }} \n > S3 Path : ${{ env.build_file_path_s3 }}"
                     }
                   }
               ]
