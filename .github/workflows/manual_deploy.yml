@@ -123,8 +123,8 @@ jobs:
         uses: 8398a7/action-slack@v3
         with:
           status: ${{ job.status }}
-          text: ${{ env.service }}_build
-          author_name: ${{ env.service }}_build_bot
+          text: ${{ needs.build.outputs.build_id }}_build
+          author_name: ${{ needs.build.outputs.build_id }}_build_bot
           fields: repo,message,commit,author,action,eventName,ref,workflow,job,took
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
@@ -150,7 +150,7 @@ jobs:
                     "type": "section",
                     "text": {
                         "type": "mrkdwn",
-                        "text": "Service: $SERVICE \nBranch: $PROFILE \nS3 Path: $S3_PATH"
+                        "text": "Service: ${{ env.SERVICE }}\nBranch: ${{ env.PROFILE }}\nS3 Path: ${{ env.S3_PATH }}"
                     }
                   }
               ]
