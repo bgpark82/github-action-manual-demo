@@ -32,8 +32,8 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
 
-      - id: vars
-        name: Set variables
+      - name: Set environment variables
+        id: vars
         run: |
           service="${{ inputs.service }}"
           profile="${{ github.ref_name }}"
@@ -45,29 +45,23 @@ jobs:
           echo "build_file_path_local=$service/build/libs"  >> $GITHUB_OUTPUT
           echo "build_file_path_s3=${{ env.S3_DEPLOY_BASE_PATH }}/$service/$profile/$build_file"  >> $GITHUB_OUTPUT
           
-          echo "service=$service" >> $GITHUB_ENV
-          echo "profile=$profile" >> $GITHUB_ENV
-          echo "build_file=$service.tar"  >> $GITHUB_ENV
-          echo "build_file_path_local=$service/build/libs"  >> $GITHUB_ENV
-          echo "build_file_path_s3=${{ env.S3_DEPLOY_BASE_PATH }}/$service/$profile/$build_file"  >> $GITHUB_ENV
-
       - name: Print variables
-        id: env_vars
         run: |
-          echo service: ${{ env.service }}
-          echo profile: ${{ env.profile }}
-          echo build_file: ${{ env.build_file }}
-          echo build_file_path_s3: ${{ env.build_file_path_s3 }}
-          echo build_file_path_local: ${{ env.build_file_path_local }}
+          echo service: ${{ steps.vars.outputs.service }}
+          echo profile: ${{ steps.vars.outputs.profile }}
+          echo build_file: ${{ steps.vars.outputs.build_file }}
+          echo build_file_path_s3: ${{ steps.vars.outputs.build_file_path_s3 }}
+          echo build_file_path_local: ${{ steps.vars.outputs.build_file_path_local }}
 
       - name: Check variables
         run: |
           echo "check if service module exist"
 
-          if [ -d "${{ env.service }}" ]; then
-            echo "Service ${{ env.service }} exist"
+          current_service="${{ steps.vars.outputs.service }}"
+          if [ -d "$current_service" ]; then
+            echo "Service $current_service exist"
           else
-            echo "Unsupported service: ${{ env.service }}"
+            echo "Unsupported service: $current_service"
             exit 1
           fi
 
@@ -124,13 +118,16 @@ jobs:
     name: do post action
     runs-on: ubuntu-22.04
     needs: [ setup_environment, build ]
+    env:
+      service: ${{ needs.setup_environment.outputs.service }}
+      profile: ${{ needs.setup_environment.outputs.profile }}
     steps:
       - name: Send result to Slack
         uses: 8398a7/action-slack@v3
         with:
           status: ${{ job.status }}
-          text: ${{ needs.build.outputs.build_id }}_build
-          author_name: ${{ needs.build.outputs.build_id }}_build_bot
+          text: ${{ env.service }}_build
+          author_name: ${{ env.service }}_build_bot
           fields: repo,message,commit,author,action,eventName,ref,workflow,job,took
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
@@ -149,14 +146,14 @@ jobs:
                   "type": "section",
                   "text": {
                     "type": "mrkdwn",
-                    "text": "✅ ${{ needs.setup_environment.outputs.service }}를 배포하였습니다"
+                    "text": "✅ ${{ env.service }} 빌드 파일이 S3로 전송되었습니다"
                   }
                 },
                 {
                     "type": "section",
                     "text": {
                         "type": "mrkdwn",
-                        "text": "Service: ${{ env.SERVICE }}\nBranch: ${{ env.PROFILE }}\nS3 Path: ${{ env.S3_PATH }}"
+                        "text": "Service: ${{ env.service }}\nBranch: ${{ env.profile }}"
                     }
                   }
               ]
@@ -164,6 +161,3 @@ jobs:
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
           SLACK_WEBHOOK_TYPE: INCOMING_WEBHOOK
-          SERVICE: ${{ needs.setup_environment.outputs.service }}
-          PROFILE: ${{ needs.setup_environment.outputs.profile }}
-          S3_PATH: ${{ needs.setup_environment.outputs.build_file_path_s3 }}
